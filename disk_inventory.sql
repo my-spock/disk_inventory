@@ -43,7 +43,7 @@ if object_id ('item') is null
 	create table item
 		(item_id int not null identity primary key,
 		item_name nvarchar(100) not null,
-		release_date date null,
+		release_date date not null,
 		status_id int not null references status_type (status_id),
 		item_type_id int not null references item_type (item_type_id),
 		genre_id int not null references genre (genre_id));
