@@ -1,3 +1,7 @@
+--Mod Log
+-- 03/07/2021 by Rebecca Plowman
+--	changed item.release_date to not null
+
 use master;
 Go
 
