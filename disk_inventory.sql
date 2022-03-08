@@ -1,6 +1,8 @@
 --Mod Log
 -- 03/07/2021 by Rebecca Plowman
 --	changed item.release_date to not null
+--03/08/2021 by Rebecca Plowman
+--	added surrogate key and index to borrowed_item table
 
 use master;
 Go
@@ -56,11 +58,11 @@ Go
 --create borrowed_item table
 if object_id ('borrowed_item') is null
 	create table borrowed_item
-		(borrower_id int not null references borrower (borrower_id),
+		(borrowed_id int not null identity primary key,
+		borrower_id int not null references borrower (borrower_id),
 		item_id int not null references item (item_id),
 		borrowed_date datetime2 not null default getdate(),
-		returned_date datetime2 null,
-		primary key (borrower_id, item_id));
+		returned_date datetime2 null);
 Go
 
 use master;
