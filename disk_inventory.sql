@@ -8,6 +8,8 @@
 --03/11/2022 by Rebecca Plowman
 --	added drop statements to normalize id values between databases (for ease of use by instructor)
 --	populating tables with data
+--03/14/2022 by Rebecca Plowman
+--	bugfix: add borrowed_date in select statement for borrowed_item rows with null values for returned_date
 
 use master;
 Go
@@ -266,7 +268,7 @@ where item_id = any(
 Go
 
 --list items that are on loan and haven't been returned
-select borrowed_item.borrower_id, borrower_name, borrowed_item.item_id, item.item_name, returned_date
+select borrowed_item.borrower_id, borrower_name, borrowed_item.item_id, item.item_name, borrowed_date, returned_date
 from borrowed_item
 	join borrower on borrowed_item.borrower_id = borrower.borrower_id
 	join item on borrowed_item.item_id = item.item_id
