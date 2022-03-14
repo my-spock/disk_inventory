@@ -10,6 +10,7 @@
 --	populating tables with data
 --03/14/2022 by Rebecca Plowman
 --	bugfix: add borrowed_date in select statement for borrowed_item rows with null values for returned_date
+--	added select statements to show all disks, all borrowed disks, all disks borrowed more than once, and all disks currently on loan
 
 use master;
 Go
@@ -208,18 +209,6 @@ values
 	('Kittens in a Blender', '2019-02-01', 1, 5, 7);
 Go
 
---update Wrath of Khan status to damaged
-update item
-set status_id = 3
-where item_id = 19;
-Go
-
---update Tow Towers status to lost
-update item
-set status_id = 5
-where item_id = 8;
-Go
-
 --create borrowed_item table
 if object_id ('borrowed_item') is null
 	create table borrowed_item
@@ -257,14 +246,26 @@ values
 	(17, 3, dateadd(day, -11, GETDATE()), dateadd(day, -3, getdate()));
 Go
 
+--update Wrath of Khan status to damaged
+update item
+set status_id = 3
+where item_id = 19;
+Go
+
+--update Fellowship of the Ring status to lost
+update item
+set status_id = 5
+where item_id = 8;
+Go
+
 --update status_id of items that haven't been returned
 update item
 set status_id = 2
 where item_id = any(
 	select item_id
 	from borrowed_item
-	where returned_date is null
-);
+	where returned_date is null)
+	and status_id = 1;
 Go
 
 --list items that are on loan and haven't been returned
@@ -297,4 +298,45 @@ Go
 --grant read perms to diskUserRP
 alter role db_datareader
 	add member diskUserRP;
+Go
+
+use diskinventory_rp;
+Go
+
+--show all items in database
+select item_name as 'Disk Name', release_date as 'Release Date', item_type_name as Type, genre_name as Genre, status_name as Status
+from item, item_type, genre, status_type
+where item.item_type_id = item_type.item_type_id
+	and item.genre_id = genre.genre_id
+	and item.status_id = status_type.status_id
+order by item_name;
+Go
+
+--show all borrowed items
+select borrower_name as Name, item_name as 'Disk Name', cast(borrowed_date as date) as 'Borrowed Date', cast(returned_date as date) as 'Returned Date'
+from borrowed_item, borrower, item
+where borrowed_item.item_id = item.item_id
+	and borrowed_item.borrower_id = borrower.borrower_id
+order by Name;
+Go
+
+--show items borrowed more than once
+select item_name as 'Disk Name', count(borrowed_item.item_id) as 'Times Borrowed'
+from borrowed_item, item
+where item.item_id = borrowed_item.item_id
+group by item.item_name
+having count(borrowed_item.item_id) > 1
+order by 'Times Borrowed' desc;
+Go
+
+--show items currently on loan
+select distinct item_name as 'Disk Name', cast(borrowed_date as date) as 'Borrowed', cast(returned_date as date) as 'Returned', borrower_name as Name
+from item
+	join borrowed_item
+	on borrowed_item.item_id = item.item_id
+	join borrower
+	on borrowed_item.borrower_id = borrower.borrower_id
+where item.status_id = 2 and
+	borrowed_item.returned_date is null
+order by 'Disk Name', Name;
 Go
