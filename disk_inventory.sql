@@ -304,7 +304,10 @@ use diskinventory_rp;
 Go
 
 --show all items in database
-select item_name as 'Disk Name', release_date as 'Release Date', item_type_name as Type, genre_name as Genre, status_name as Status
+select item_name as 'Disk Name', 
+	concat(month(release_date), '/', day(release_date), '/', year(release_date)) as 'Release Date', 
+	item_type_name as Type, 
+	genre_name as Genre, status_name as Status
 from item, item_type, genre, status_type
 where item.item_type_id = item_type.item_type_id
 	and item.genre_id = genre.genre_id
@@ -313,11 +316,15 @@ order by item_name;
 Go
 
 --show all borrowed items
-select borrower_name as Name, item_name as 'Disk Name', cast(borrowed_date as date) as 'Borrowed Date', cast(returned_date as date) as 'Returned Date'
+select right(borrower_name, len(borrower_name) - charindex(' ', borrower_name)) as 'Last',
+	left(borrower_name, CHARINDEX(' ', borrower_name)) as 'First', 
+	item_name as 'Disk Name', 
+	cast(borrowed_date as date) as 'Borrowed Date', 
+	cast(returned_date as date) as 'Returned Date'
 from borrowed_item, borrower, item
 where borrowed_item.item_id = item.item_id
 	and borrowed_item.borrower_id = borrower.borrower_id
-order by Name;
+order by Last, First;
 Go
 
 --show items borrowed more than once
@@ -330,7 +337,11 @@ order by 'Times Borrowed' desc;
 Go
 
 --show items currently on loan
-select distinct item_name as 'Disk Name', cast(borrowed_date as date) as 'Borrowed', cast(returned_date as date) as 'Returned', borrower_name as Name
+select distinct item_name as 'Disk Name', 
+	cast(borrowed_date as date) as 'Borrowed', 
+	cast(returned_date as date) as 'Returned', 
+	right(borrower_name, len(borrower_name) - charindex(' ', borrower_name)) as 'Last Name',
+	left(borrower_name, charindex(' ', borrower_name)) as 'First Name'
 from item
 	join borrowed_item
 	on borrowed_item.item_id = item.item_id
@@ -338,5 +349,5 @@ from item
 	on borrowed_item.borrower_id = borrower.borrower_id
 where item.status_id = 2 and
 	borrowed_item.returned_date is null
-order by 'Disk Name', Name;
+order by 'Disk Name', 'Last Name', 'First Name';
 Go
