@@ -355,9 +355,10 @@ where item.status_id = 2 and
 order by 'Disk Name', 'Last Name', 'First Name';
 Go
 
---create view of borrowers with no borrowed_item
+--drop view of borrowers with no borrowed_item, if exists
 drop view if exists View_Borrower_No_Loans;
 go
+--create view of borrowers with no borrowed_item
 create view View_Borrower_No_Loans
 as
 select borrower_id, 
