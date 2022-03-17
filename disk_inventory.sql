@@ -11,6 +11,9 @@
 --03/14/2022 by Rebecca Plowman
 --	bugfix: add borrowed_date in select statement for borrowed_item rows with null values for returned_date
 --	added select statements to show all disks, all borrowed disks, all disks borrowed more than once, and all disks currently on loan
+--03/17/2022 by Rebecca Plowman
+--	added create View_Borrower_No_Loans view
+--	added select statement for borrowers who have borrowed multiple items
 
 use master;
 Go
@@ -351,3 +354,32 @@ where item.status_id = 2 and
 	borrowed_item.returned_date is null
 order by 'Disk Name', 'Last Name', 'First Name';
 Go
+
+--create view of borrowers with no borrowed_item
+drop view if exists View_Borrower_No_Loans;
+go
+create view View_Borrower_No_Loans
+as
+select borrower_id, 
+	right(borrower_name, len(borrower_name) - charindex(' ', borrower_name)) as LastName,
+	left(borrower_name, charindex(' ', borrower_name)) as FirstName
+from borrower
+where borrower_id not in
+	(select distinct borrower_id
+	from borrowed_item);
+go
+--select borrowers with no borrowed item
+select LastName, FirstName from View_Borrower_No_Loans
+order by LastName, FirstName;
+go
+
+--show borrowers who've borrowed multiple items
+select 	right(borrower_name, len(borrower_name) - charindex(' ', borrower_name)) as LastName,
+	left(borrower_name, charindex(' ', borrower_name)) as FirstName,
+	count(distinct item_id) as 'Disks Borrowed'
+from borrowed_item, borrower
+where borrowed_item.borrower_id = borrower.borrower_id
+group by borrower.borrower_name
+having count(distinct item_id) > 1
+order by LastName, FirstName;
+go
