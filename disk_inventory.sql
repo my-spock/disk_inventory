@@ -14,6 +14,9 @@
 --03/17/2022 by Rebecca Plowman
 --	added create View_Borrower_No_Loans view
 --	added select statement for borrowers who have borrowed multiple items
+--03/28/2022 by Rebecca Plowman
+--	added procedure sp_insertBorrowedItem and granted exec permission
+--	added procedure sp_updateBorrowedItem and granted exec permission
 
 use master;
 Go
@@ -249,6 +252,71 @@ values
 	(17, 3, dateadd(day, -11, GETDATE()), dateadd(day, -3, getdate()));
 Go
 
+--drop sp if exists
+drop proc if exists sp_insertBorrowedItem;
+go
+
+--sp to insert into borrowed_item
+create proc sp_insertBorrowedItem
+	@borrower_id int,
+	@item_id int,
+	@borrowed_date datetime2,
+	@returned_date datetime2 = NULL
+as
+begin try
+	insert into borrowed_item
+	(borrower_id, item_id, borrowed_date, returned_date)
+	values
+	(@borrower_id, @item_id, @borrowed_date, @returned_date);
+end try
+begin catch
+	PRINT 'An error occurred.';
+	PRINT 'Message: ' + CONVERT(varchar(250), ERROR_MESSAGE());
+	IF ERROR_NUMBER() >= 50000
+        PRINT 'This is a custom error message.';
+end catch
+Go
+--exec w/o error
+declare @datenow datetime2 = getdate();
+exec sp_insertBorrowedItem 18, 12, @datenow, @datenow;
+--exec w/ error
+exec sp_insertBorrowedItem 18, 45, @datenow, @datenow;
+go
+
+--drop sp if exists
+drop proc if exists sp_updateBorrowedItem;
+go
+
+--sp to update borrowed_item
+create proc sp_updateBorrowedItem
+	@borrowed_id int,
+	@borrower_id int,
+	@item_id int,
+	@borrowed_date datetime2,
+	@returned_date datetime2 = NULL
+as
+begin try
+	update borrowed_item
+	set borrower_id = @borrower_id,
+		item_id = @item_id,
+		borrowed_date = @borrowed_date,
+		returned_date = @returned_date
+	where borrowed_id = @borrowed_id;
+end try
+begin catch
+	PRINT 'An error occurred.';
+	PRINT 'Message: ' + CONVERT(varchar(250), ERROR_MESSAGE());
+	IF ERROR_NUMBER() >= 50000
+        PRINT 'This is a custom error message.';
+end catch
+go
+--exec w/o error
+declare @datenow datetime2 = getdate();
+exec sp_updateBorrowedItem 22, 5, 7, @datenow, null;
+--exec w/ error
+exec sp_updateBorrowedItem 22, 5, 7, null, null;
+go
+
 --update Wrath of Khan status to damaged
 update item
 set status_id = 3
@@ -302,6 +370,10 @@ Go
 alter role db_datareader
 	add member diskUserRP;
 Go
+--grant exec permissions to diskUserRP
+grant exec on sp_insertBorrowedItem to diskUserRP;
+grant exec on sp_updateBorrowedItem to diskUserRP;
+go
 
 use diskinventory_rp;
 Go
