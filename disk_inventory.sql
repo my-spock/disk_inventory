@@ -17,6 +17,11 @@
 --03/28/2022 by Rebecca Plowman
 --	added procedure sp_insertBorrowedItem and granted exec permission
 --	added procedure sp_updateBorrowedItem and granted exec permission
+--04/01/2022 by Rebecca Plowman
+--	added stored procedures to insert, update, and delete in borrower table
+--	added stored procedures to insert, update, and delete in item table
+--	edited error message in borrowed_item stored procedures
+--	grant exec permissions for sps in item and borrower tables
 
 use master;
 Go
@@ -87,6 +92,88 @@ values
 	('Sophie Sherman', '6135550182'),
 	('Jack Ware', '6135550130');
 Go
+
+--drop sp if exists
+drop proc if exists sp_insertBorrower;
+go
+
+--create sp_insertBorrower
+create proc sp_insertBorrower
+	@borrower_name nvarchar(100),
+	@borrower_phone_number char(10)
+as
+begin try
+	begin tran
+		insert into borrower
+			(borrower_name, borrower_phone_number)
+		values
+			(@borrower_name, @borrower_phone_number)
+	commit tran;
+end try
+begin  catch
+	rollback tran;
+	Print 'Insert failed due to Error number: ' + CONVERT(varchar, ERROR_NUMBER());
+	PRINT 'Error message: ' + CONVERT(varchar, ERROR_MESSAGE()) + ' on line ' + convert(varchar, Error_line());
+end catch;
+go
+
+--call sp_insertBorrower
+exec sp_insertBorrower 'Test Borrower', '2085550154';
+go
+
+--drop sp if exists
+drop proc if exists sp_updateBorrower;
+go
+
+--create sp_updateBorrower
+create proc sp_updateBorrower
+	@borrower_id int,
+	@borrower_name varchar(100),
+	@borrower_phone_number char(10)
+as
+begin try
+	begin tran
+		update borrower
+		set borrower_name = @borrower_name,
+			borrower_phone_number = @borrower_phone_number
+		where borrower_id = @borrower_id;
+	commit tran;
+end try
+begin catch
+	rollback tran;
+	Print 'Insert failed due to Error number: ' + CONVERT(varchar, ERROR_NUMBER());
+	PRINT 'Error message: ' + CONVERT(varchar, ERROR_MESSAGE()) + ' on line ' + convert(varchar, Error_line());
+end catch;
+go
+
+--call sp_updateBorrower
+exec sp_updateBorrower 23, 'Test Borrower', '5555555555';
+go
+
+--drop sp if exists
+drop proc if exists sp_deleteBorrower;
+go
+
+--create sp_deleteBorrower
+create proc sp_deleteBorrower
+	@borrower_id int
+as
+begin try
+	begin tran
+		delete Borrower
+		where borrower_id = @borrower_id;
+	commit tran;
+end try
+begin catch
+	rollback tran;
+	Print 'Insert failed due to Error number: ' + CONVERT(varchar, ERROR_NUMBER());
+	PRINT 'Error message: ' + CONVERT(varchar, ERROR_MESSAGE()) + ' on line ' + convert(varchar, Error_line());
+end catch;
+go
+
+--call sp_deleteBorrower
+exec sp_deleteBorrower @@identity; --deletes last inserted id
+go
 
 --delete one borrower row
 delete borrower
@@ -215,6 +302,88 @@ values
 	('Kittens in a Blender', '2019-02-01', 1, 5, 7);
 Go
 
+--drop sp if exists
+drop proc if exists sp_insertItem;
+go
+
+--create sp_insertItem
+create proc sp_insertItem
+	@item_name nvarchar(100), @release_date date, @status_id int, @item_type_id int, @genre_id int
+as
+begin try
+	begin tran
+		insert into item
+			(item_name, release_date, status_id, item_type_id, genre_id)
+		values
+			(@item_name, @release_date, @status_id, @item_type_id, @genre_id)
+	commit tran;
+end try
+begin  catch
+	rollback tran;
+	Print 'Insert failed due to Error number: ' + CONVERT(varchar, ERROR_NUMBER());
+	PRINT 'Error message: ' + CONVERT(varchar, ERROR_MESSAGE()) + ' on line ' + convert(varchar, Error_line());
+end catch;
+go
+
+--call sp_insertItem
+exec sp_insertItem 	'The Wrath of Khan - Copy', '1982-06-04', 1, 2, 4;
+go
+
+--drop sp if exists
+drop proc if exists sp_updateItem;
+go
+
+--create sp_updateItem
+create proc sp_updateItem
+	@item_id int, @item_name nvarchar(100), @release_date date, @status_id int, @item_type_id int, @genre_id int
+as
+begin try
+	begin tran
+		update item
+		set item_name = @item_name,
+			release_date = @release_date, 
+			status_id = @status_id, 
+			item_type_id = @item_type_id, 
+			genre_id = @genre_id
+		where item_id = @item_id;
+	commit tran;
+end try
+begin catch
+	rollback tran;
+	Print 'Insert failed due to Error number: ' + CONVERT(varchar, ERROR_NUMBER());
+	PRINT 'Error message: ' + CONVERT(varchar, ERROR_MESSAGE()) + ' on line ' + convert(varchar, Error_line());
+end catch;
+go
+
+--call sp_updateItem
+exec sp_updateItem 25, 'New Wrath of Khan', '1984-06-04', 1, 2, 4;
+go
+
+--drop sp if exists
+drop proc if exists sp_deleteItem;
+go
+
+--create sp_deleteItem
+create proc sp_deleteItem
+	@item_id int
+as
+begin try
+	begin tran
+		delete item
+		where item_id = @item_id;
+	commit tran;
+end try
+begin catch
+	rollback tran;
+	Print 'Insert failed due to Error number: ' + CONVERT(varchar, ERROR_NUMBER());
+	PRINT 'Error message: ' + CONVERT(varchar, ERROR_MESSAGE()) + ' on line ' + convert(varchar, Error_line());
+end catch;
+go
+
+--call sp_deleteItem
+exec sp_deleteItem @@identity; --deletes last inserted id
+go
+
 --create borrowed_item table
 if object_id ('borrowed_item') is null
 	create table borrowed_item
@@ -270,7 +439,7 @@ begin try
 	(@borrower_id, @item_id, @borrowed_date, @returned_date);
 end try
 begin catch
-	PRINT 'An error occurred.';
+	PRINT 'An error occurred on line ' + CONVERT(varchar(250), ERROR_LINE()) + ' of sp_insertBorrowedItem';
 	PRINT 'Message: ' + CONVERT(varchar(250), ERROR_MESSAGE());
 	IF ERROR_NUMBER() >= 50000
         PRINT 'This is a custom error message.';
@@ -281,6 +450,7 @@ declare @datenow datetime2 = getdate();
 exec sp_insertBorrowedItem 18, 12, @datenow, @datenow;
 --exec w/ error
 exec sp_insertBorrowedItem 18, 45, @datenow, @datenow;
+print 'Error expected. Line 344.';
 go
 
 --drop sp if exists
@@ -304,7 +474,7 @@ begin try
 	where borrowed_id = @borrowed_id;
 end try
 begin catch
-	PRINT 'An error occurred.';
+	PRINT 'An error occurred on line ' + CONVERT(varchar(250), ERROR_LINE()) + ' of sp_updateBorrowedItem';
 	PRINT 'Message: ' + CONVERT(varchar(250), ERROR_MESSAGE());
 	IF ERROR_NUMBER() >= 50000
         PRINT 'This is a custom error message.';
@@ -315,6 +485,7 @@ declare @datenow datetime2 = getdate();
 exec sp_updateBorrowedItem 22, 5, 7, @datenow, null;
 --exec w/ error
 exec sp_updateBorrowedItem 22, 5, 7, null, null;
+print 'Error expected. Line 379.';
 go
 
 --update Wrath of Khan status to damaged
@@ -372,7 +543,13 @@ alter role db_datareader
 Go
 --grant exec permissions to diskUserRP
 grant exec on sp_insertBorrowedItem to diskUserRP;
+grant exec on sp_insertBorrower to diskUserRP;
+grant exec on sp_insertItem to diskUserRP;
 grant exec on sp_updateBorrowedItem to diskUserRP;
+grant exec on sp_updateBorrower to diskUserRP;
+grant exec on sp_updateItem to diskUserRP;
+grant exec on sp_deleteBorrower to diskUserRP;
+grant exec on sp_deleteItem to diskUserRP;
 go
 
 use diskinventory_rp;
