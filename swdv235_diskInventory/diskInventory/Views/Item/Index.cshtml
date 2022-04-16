@@ -1,0 +1,56 @@
+﻿@model ItemListViewModel
+@{
+    ViewData["Title"] = "Items";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Items</h1>
+
+    <div class="row">
+        <div class="col-sm-11 offset-1">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">
+                    <div class="row">
+                        <h4 class="col-sm-2">
+                            Type
+                        </h4>
+                        <h4 class="col-sm-4">
+                            Title
+                        </h4>
+                        <h4 class="col-sm-2">
+                            Release Date
+                        </h4>
+                        <h4 class="col-sm-2">
+                            Genre
+                        </h4>
+                        <h4 class="col-sm-1">
+                            Status
+                        </h4>
+                    </div>
+                </li>
+                @foreach (Item item in Model.Items)
+                {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <p class="col-sm-2">
+                                @item.Type.Name
+                            </p>
+                            <p class="col-sm-4">
+                                @item.Name
+                            </p>
+                            <p class="col-sm-2">
+                                @Model.FormatReleaseDate(item.ReleaseDate)
+                            </p>
+                            <p class="col-sm-2">
+                                @item.Genre.Name
+                            </p>
+                            <p class="col-sm-1">
+                                @item.Status.Name
+                            </p>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

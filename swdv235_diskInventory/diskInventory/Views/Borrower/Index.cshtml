@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Borrowers";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Borrowers</h1>
+
+    <div class="row">
+        <div class="col-8 offset-2">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">
+                    <div class="row">
+                        <h4 class="col">
+                            Full Name
+                        </h4>
+                        <h4 class="col">
+                            Phone Number
+                        </h4>
+                    </div>
+                </li>
+                @foreach (Borrower borrower in ViewBag.borrowers)
+                {
+                    <li class="list-group-item">
+                        <div class="row">
+                            <p class="col">
+                                @borrower.FullName
+                            </p>
+                            <p class="col">
+                                @(borrower.Phone == null ? "Unknown phone number." : borrower.Phone)
+                            </p>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
