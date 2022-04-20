@@ -1,5 +1,6 @@
 ﻿using diskInventory.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,11 @@ namespace diskInventory.Controllers
         {
             var model = new ItemListViewModel
             {
-                Types = context.ItemTypes.ToList(),
-                Statuses = context.StatusTypes.ToList(),
-                Genres = context.Genres.ToList(),
+                //Types = context.ItemTypes.ToList(),
+                //Statuses = context.StatusTypes.ToList(),
+                Genres = context.Genres
+                .Include("Items.Status").Include("Items.Type")
+                .ToList(),
                 Items = context.Items.OrderBy(i => i.Name).ToList()
             };
 

@@ -8,6 +8,9 @@
 
     <div class="row">
         <div class="col-sm-11 offset-1">
+            @foreach (Genre genre in Model.Genres)
+            {
+                <h3 class="text-left">@genre.Name</h3>
             <ul class="list-group">
                 <li class="list-group-item list-group-item-primary">
                     <div class="row">
@@ -17,18 +20,15 @@
                         <h4 class="col-sm-4">
                             Title
                         </h4>
-                        <h4 class="col-sm-2">
+                        <h4 class="col-sm-3">
                             Release Date
-                        </h4>
-                        <h4 class="col-sm-2">
-                            Genre
                         </h4>
                         <h4 class="col-sm-1">
                             Status
                         </h4>
                     </div>
                 </li>
-                @foreach (Item item in Model.Items)
+                @foreach (Item item in genre.Items)
                 {
                     <li class="list-group-item">
                         <div class="row">
@@ -38,11 +38,8 @@
                             <p class="col-sm-4">
                                 @item.Name
                             </p>
-                            <p class="col-sm-2">
+                            <p class="col-sm-3">
                                 @Model.FormatReleaseDate(item.ReleaseDate)
-                            </p>
-                            <p class="col-sm-2">
-                                @item.Genre.Name
                             </p>
                             <p class="col-sm-1">
                                 @item.Status.Name
@@ -51,6 +48,8 @@
                     </li>
                 }
             </ul>
+            <br/>
+            }
         </div>
     </div>
 </div>
