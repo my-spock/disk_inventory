@@ -19,17 +19,6 @@ namespace diskInventory.Controllers
         [Route("[controller]s")]
         public IActionResult Index()
         {
-            //get a list of item types
-            //List<ItemType> itemTypes = context.ItemTypes.OrderBy(i => i.Name).ToList();
-            //ViewData["types"] = itemTypes;
-
-            //get items by type
-            //foreach (ItemType type in itemTypes)
-            //{
-            //    ViewData[type.Name] = context.Items.ToList();
-            //}
-            //ViewData["items"] = context.Items.ToList();
-
             var model = new ItemListViewModel
             {
                 Types = context.ItemTypes.ToList(),

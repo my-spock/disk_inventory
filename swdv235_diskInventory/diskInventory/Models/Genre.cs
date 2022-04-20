@@ -12,5 +12,8 @@ namespace diskInventory.Models
         public int Id { get; set; }
         [Column("genre_name")]
         public string Name { get; set; }
+
+        //nav property to Items
+        public ICollection<Item> Items { get; set; }
     }
 }

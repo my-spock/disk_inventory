@@ -15,8 +15,12 @@ namespace diskInventory.Models
         [Column("returned_date")]
         public DateTime? ReturnedDate { get; set; }
         [Column("borrower_id")]
-        public Borrower Borrower { get; set; }
+        public int BorrowerId { get; set; }
         [Column("item_id")]
+        public int ItemId { get; set; }
+
+        //nav properties
+        public Borrower Borrower { get; set; }
         public Item Item { get; set; }
     }
 }

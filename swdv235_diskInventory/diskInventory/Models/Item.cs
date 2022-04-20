@@ -17,12 +17,15 @@ namespace diskInventory.Models
         public DateTime ReleaseDate { get; set; }
         [Column("status_id")]
         public int StatusId { get; set; }
-        public StatusType Status { get; set; }
         [Column("item_type_id")]
         public int TypeId { get; set; }
-        public ItemType Type { get; set; }
         [Column("genre_id")]
         public int GenreId { get; set; }
+
+        //nav properties
+        public StatusType Status { get; set; }
+        public ItemType Type { get; set; }
         public Genre Genre { get; set; }
+        public ICollection<BorrowedItem> BorrowedInstances { get; set; }
     }
 }

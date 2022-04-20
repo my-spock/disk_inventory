@@ -14,5 +14,8 @@ namespace diskInventory.Models
         public string FullName { get; set; }
         [Column("borrower_phone_number")]
         public string Phone { get; set; }
+
+        //nav property
+        public ICollection<BorrowedItem> BorrowedItems { get; set; }
     }
 }
