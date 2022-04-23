@@ -1,0 +1,62 @@
+﻿@model BorrowerViewModel
+
+@{
+    ViewData["Title"] = $" | {Model.action} Borrower";
+}
+
+<h1 class="display-4">@Model.action Item</h1>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form asp-action="@Model.action" method="post">
+
+    @* Item ID needed by both delete and edit *@
+    <input type="hidden" asp-for="Borrower.Id" />
+
+    @* Operation field needed by remote validation *@
+    <input type="hidden" name="Operation" value="action" />
+
+    @* if deleting, just display item name value *@
+    @if (Operation.IsDelete(Model.action))
+    {
+        <div class="row">
+            <p class="col-sm-4">
+                Name: @Model.Borrower.FullName
+            </p>
+        </div>
+        @if (Model.borrowCount > 0)
+        {
+            <p class="text-danger">This borrower has a borrow history, which will also be deleted.</p>
+        }
+    }
+    else
+    {
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Name:</label></div>
+            <div class="col-sm-4">
+                <input type="text" asp-for="Borrower.FullName" class="form-control" />
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Borrower.FullName" class="text-danger"></span>
+            </div>
+        </div>
+    }
+    @if (!Operation.IsDelete(Model.action))
+    {
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Phone:</label></div>
+            <div class="col-sm-4">
+                <input type="text" asp-for="Borrower.Phone" class="form-control" />
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Borrower.Phone" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary">@Model.action</button>
+            <a asp-action="Index" class="btn btn-primary">Cancel</a>
+        </div>
+    </div>
+</form>

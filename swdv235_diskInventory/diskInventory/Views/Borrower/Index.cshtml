@@ -1,10 +1,14 @@
-﻿@{
+﻿@model List<Borrower>
+@{
     ViewData["Title"] = "Borrowers";
 }
 
 <div class="text-center">
     <h1 class="display-4">Borrowers</h1>
 
+    <div class="row">
+        <a asp-action="Add" class="btn btn-primary offset-2">Add New Borrower</a>
+    </div>
     <div class="row">
         <div class="col-8 offset-2">
             <ul class="list-group">
@@ -16,9 +20,10 @@
                         <h4 class="col">
                             Phone Number
                         </h4>
+                        <span class="col"></span>
                     </div>
                 </li>
-                @foreach (Borrower borrower in ViewBag.borrowers)
+                @foreach (Borrower borrower in Model)
                 {
                     <li class="list-group-item">
                         <div class="row">
@@ -28,6 +33,12 @@
                             <p class="col">
                                 @(borrower.Phone == null ? "Unknown phone number." : borrower.Phone)
                             </p>
+                            <div class="col">
+                                <a asp-action="Edit" asp-route-id="@borrower.Id"
+                                   class="btn btn-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@borrower.Id"
+                                   class="btn btn-primary">Delete</a>
+                            </div>
                         </div>
                     </li>
                 }
