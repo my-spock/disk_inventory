@@ -1,0 +1,98 @@
+﻿@model ItemViewModel
+
+@{
+    ViewData["Title"] = $" | {Model.action} Book";
+}
+
+<h1 class="display-4">@Model.action Item</h1>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form asp-action="@Model.action" method="post">
+
+    @* Item ID needed by both delete and edit *@
+    <input type="hidden" asp-for="Item.Id" />
+
+    @* Operation field needed by remote validation *@
+    <input type="hidden" name="Operation" value="action" />
+
+    @* if deleting, just display item name value *@
+    @if (Operation.IsDelete(Model.action))
+    {
+        <div class="row">
+            <p class="col-sm-4">
+                Name: @Model.Item.Name
+            </p>
+        </div>
+        @if (Model.borrowCount > 0)
+        {
+            <p class="text-danger">This item has a borrow history, which will also be deleted.</p>
+        }
+    }
+    else
+    {
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Name:</label></div>
+            <div class="col-sm-4">
+                <input type="text" asp-for="Item.Name" class="form-control" />
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Item.Name" class="text-danger"></span>
+            </div>
+        </div>
+    }
+    @if (!Operation.IsDelete(Model.action))
+    {
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Release Date:</label></div>
+            <div class="col-sm-4">
+                <input type="text" asp-for="Item.ReleaseDate" class="form-control" />
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Item.ReleaseDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Genre:</label></div>
+            <div class="col-sm-4">
+                <select asp-for="Item.GenreId" class="form-control"
+                        asp-items='@new SelectList(Model.Genres, "Id", "Name", Model.Item.GenreId)'>
+                    <option value="">Select Genre</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Item.GenreId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Type:</label></div>
+            <div class="col-sm-4">
+                <select asp-for="Item.TypeId" class="form-control"
+                        asp-items='@new SelectList(Model.Types, "Id", "Name", Model.Item.TypeId)'>
+                    <option value="">Select Type</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Item.TypeId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-2"><label>Status:</label></div>
+            <div class="col-sm-4">
+                <select asp-for="Item.StatusId" class="form-control"
+                        asp-items='@new SelectList(Model.Statuses, "Id", "Name", Model.Item.StatusId)'>
+                    <option value="">Select Status</option>
+                </select>
+            </div>
+            <div class="col-sm-6">
+                <span asp-validation-for="Item.StatusId" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary">@Model.action</button>
+            <a asp-action="Index" class="btn btn-primary">Cancel</a>
+        </div>
+    </div>
+</form>

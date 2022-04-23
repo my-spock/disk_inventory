@@ -7,49 +7,60 @@
     <h1 class="display-4">Items</h1>
 
     <div class="row">
-        <div class="col-sm-11 offset-1">
-            @foreach (Genre genre in Model.Genres)
-            {
-                <h3 class="text-left">@genre.Name</h3>
+        <a asp-action="Add" class="btn btn-primary offset-2">Add New Item</a>
+    </div>
+    <div class="row">
+        <div class="col-sm-10 offset-1">
             <ul class="list-group">
                 <li class="list-group-item list-group-item-primary">
                     <div class="row">
-                        <h4 class="col-sm-2">
-                            Type
-                        </h4>
                         <h4 class="col-sm-4">
                             Title
                         </h4>
-                        <h4 class="col-sm-3">
+                        <h4 class="col-sm-1">
+                            Type
+                        </h4>
+                        <h4 class="col-sm-1">
+                            Genre
+                        </h4>
+                        <h4 class="col-sm-2">
                             Release Date
                         </h4>
                         <h4 class="col-sm-1">
                             Status
                         </h4>
+                        <span class="col-sm-1"></span>
                     </div>
                 </li>
-                @foreach (Item item in genre.Items)
+                @foreach (Item item in Model.Items)
                 {
                     <li class="list-group-item">
                         <div class="row">
-                            <p class="col-sm-2">
-                                @item.Type.Name
-                            </p>
                             <p class="col-sm-4">
                                 @item.Name
                             </p>
-                            <p class="col-sm-3">
+                            <p class="col-sm-1">
+                                @item.Type.Name
+                            </p>
+                            <p class="col-sm-1">
+                                @item.Genre.Name
+                            </p>
+                            <p class="col-sm-2">
                                 @Model.FormatReleaseDate(item.ReleaseDate)
                             </p>
                             <p class="col-sm-1">
                                 @item.Status.Name
                             </p>
+                            <div class="col-sm-1 text-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                    class="btn btn-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                    class="btn btn-primary">Delete</a>
+                            </div>
                         </div>
                     </li>
                 }
             </ul>
-            <br/>
-            }
         </div>
     </div>
 </div>

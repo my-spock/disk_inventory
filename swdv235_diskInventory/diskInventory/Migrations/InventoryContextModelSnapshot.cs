@@ -31,10 +31,12 @@ namespace diskInventory.Migrations
                         .HasColumnName("borrowed_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("BorrowerId")
+                    b.Property<int>("BorrowerId")
+                        .HasColumnName("borrower_id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ItemId")
+                    b.Property<int>("ItemId")
+                        .HasColumnName("item_id")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ReturnedDate")
@@ -96,21 +98,26 @@ namespace diskInventory.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("GenreId")
+                    b.Property<int>("GenreId")
+                        .HasColumnName("genre_id")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnName("item_name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
-                    b.Property<string>("ReleaseDate")
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnName("release_date")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int>("StatusId")
+                        .HasColumnName("status_id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TypeId")
+                    b.Property<int>("TypeId")
+                        .HasColumnName("item_type_id")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -161,27 +168,37 @@ namespace diskInventory.Migrations
             modelBuilder.Entity("diskInventory.Models.BorrowedItem", b =>
                 {
                     b.HasOne("diskInventory.Models.Borrower", "Borrower")
-                        .WithMany()
-                        .HasForeignKey("BorrowerId");
+                        .WithMany("BorrowedItems")
+                        .HasForeignKey("BorrowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("diskInventory.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId");
+                        .WithMany("BorrowedInstances")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("diskInventory.Models.Item", b =>
                 {
                     b.HasOne("diskInventory.Models.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId");
+                        .WithMany("Items")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("diskInventory.Models.StatusType", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
+                        .WithMany("Items")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("diskInventory.Models.ItemType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId");
+                        .WithMany("Items")
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
