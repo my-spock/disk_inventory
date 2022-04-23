@@ -15,11 +15,12 @@ namespace diskInventory.Models
             context = ctx;
         }
 
-        public List<Genre> Genres {
+        public IEnumerable<Item> Items {
             get
             {
-                return context.Genres
-                .Include("Items").Include("Items.Status").Include("Items.Type")
+                return context.Items
+                .Include(i => i.Genre).Include(i => i.Status).Include(i => i.Type)
+                .OrderBy(i => i.Name).ThenBy(i => i.TypeId)
                 .ToList();
             }
         }

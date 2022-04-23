@@ -21,15 +21,6 @@ namespace diskInventory.Controllers
         public IActionResult Index()
         {
             var model = new ItemListViewModel(context);
-            //{
-                //Types = context.ItemTypes.ToList(),
-                //Statuses = context.StatusTypes.ToList(),
-                //Genres = context.Genres
-                //.Include("Items.Status").Include("Items.Type")
-                //.ToList(),
-                //Items = context.Items.OrderBy(i => i.Name).ToList()
-            //};
-
             return View(model);
         }
 
