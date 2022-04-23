@@ -60,3 +60,4 @@ C:\Users\rplowman\Documents\SWDV220\projects\disk_inventory\swdv235_diskInventor
 C:\Users\rplowman\Documents\SWDV220\projects\disk_inventory\swdv235_diskInventory\diskInventory\obj\Debug\netcoreapp3.1\diskInventory.genruntimeconfig.cache
 C:\Users\rplowman\Documents\SWDV220\projects\disk_inventory\swdv235_diskInventory\diskInventory\obj\Debug\netcoreapp3.1\Razor\Views\Borrower\Index.cshtml.g.cs
 C:\Users\rplowman\Documents\SWDV220\projects\disk_inventory\swdv235_diskInventory\diskInventory\obj\Debug\netcoreapp3.1\Razor\Views\Item\Index.cshtml.g.cs
+C:\Users\rplowman\Documents\SWDV220\projects\disk_inventory\swdv235_diskInventory\diskInventory\obj\Debug\netcoreapp3.1\Razor\Views\Item\Edit.cshtml.g.cs

@@ -8,11 +8,12 @@ namespace diskInventory.Models
 {
     public class BorrowedItem
     {
-        [Column("borrowed_item_id")]
+        [Column("borrowed_id")]
         public int Id { get; set; }
         [Column("borrowed_date")]
         public DateTime BorrowedDate { get; set; }
         [Column("returned_date")]
+        [MinDate(ErrorMessage ="The borrowed date must be in the past and before 1900/01/01.")]
         public DateTime? ReturnedDate { get; set; }
         [Column("borrower_id")]
         public int BorrowerId { get; set; }
