@@ -25,7 +25,7 @@ namespace diskInventory.Models
             }
         }
 
-        public string FormatReleaseDate(DateTime date)
+        public string FormatDate(DateTime date)
         {
             return date.ToString("yyyy/MM/dd");
         }

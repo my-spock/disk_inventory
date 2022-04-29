@@ -1,0 +1,68 @@
+﻿@model ItemViewModel
+@{
+    ViewData["Title"] = $" | {Model.action} Item";
+}
+
+<div class="text-left">
+    <h1 class="display-4">@Model.Item.Name</h1>
+    <div class="row">
+        <a asp-action="Edit" asp-route-id="@Model.Item.Id"
+           class="btn btn-primary">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Item.Id"
+           class="btn btn-primary">Delete</a>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p class="row">
+                Status: @Model.Item.Status.Name
+            </p>
+            <p class="row">
+                Type: @Model.Item.Type.Name
+            </p>
+            <p class="row">
+                Genre: @Model.Item.Genre.Name
+            </p>
+            <p>
+                Released: @Model.Item.ReleaseDate
+            </p>
+        </div>
+        <div class="col">
+            <p class="font-italic">Lending History</p>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary">
+                    <div class="row">
+                        <h4 class="col-sm-4">
+                            Borrowed
+                        </h4>
+                        <h4 class="col-sm-1">
+                            Returned
+                        </h4>
+                        <h4 class="col-sm-1">
+                            Borrower
+                        </h4>
+                        <span class="col-sm-1"></span>
+                    </div>
+                </li>
+                @foreach (BorrowedItem bi in @Model.Item.BorrowedInstances)
+                {
+                <li class="list-group-item">
+                    <div class="row">
+                        <h4 class="col-sm-4">
+                            @bi.BorrowedDate
+                        </h4>
+                        <h4 class="col-sm-1">
+                            @bi.ReturnedDate
+                        </h4>
+                        <h4 class="col-sm-1">
+                            @bi.Borrower.FullName
+                        </h4>
+                        <span class="col-sm-1">
+                        </span>
+                    </div>
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

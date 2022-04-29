@@ -18,10 +18,21 @@ namespace diskInventory.Controllers
         }
 
         [Route("[controller]s")]
-        public IActionResult Index()
+        public ViewResult Index()
         {
             var model = new ItemListViewModel(context);
             return View(model);
+        }
+
+        public IActionResult View(int id)
+        {
+            if(id == 0)
+                return RedirectToAction("Index");
+
+            ItemViewModel vm = new ItemViewModel(context);
+            var item = context.Items.Find(id);
+            vm.Item = item;
+            return View(vm);
         }
 
         //add
@@ -37,7 +48,7 @@ namespace diskInventory.Controllers
                 context.SaveChanges();
 
                 TempData["message"] = $"{item.Name} updated.";
-                return RedirectToAction("Index");  // PRG pattern
+                return RedirectToAction("View", item.Id);  // PRG pattern
             }
             else
             {
@@ -62,7 +73,7 @@ namespace diskInventory.Controllers
                 context.SaveChanges();
 
                 TempData["message"] = $"{item.Name} updated.";
-                return RedirectToAction("Index");  // PRG pattern
+                return RedirectToAction("View", item.Id);  // PRG pattern
             }
             else
             {

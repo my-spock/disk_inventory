@@ -46,16 +46,14 @@
                                 @item.Genre.Name
                             </p>
                             <p class="col-sm-2">
-                                @Model.FormatReleaseDate(item.ReleaseDate)
+                                @item.ReleaseDate
                             </p>
                             <p class="col-sm-1">
                                 @item.Status.Name
                             </p>
                             <div class="col-sm-1 text-center">
-                                <a asp-action="Edit" asp-route-id="@item.Id"
-                                    class="btn btn-primary">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id"
-                                    class="btn btn-primary">Delete</a>
+                                <a asp-action="View" asp-route-id="@item.Id"
+                                    class="btn btn-primary">Details</a>
                             </div>
                         </div>
                     </li>

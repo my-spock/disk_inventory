@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,10 +11,10 @@ namespace diskInventory.Models
     {
         [Column("borrowed_id")]
         public int Id { get; set; }
-        [Column("borrowed_date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true, NullDisplayText =""), Column("borrowed_date")]
         public DateTime BorrowedDate { get; set; }
         [Column("returned_date")]
-        [MinDate(ErrorMessage ="The borrowed date must be in the past and before 1900/01/01.")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true), MinDate(ErrorMessage ="The borrowed date must be in the past and before 1900/01/01.")]
         public DateTime? ReturnedDate { get; set; }
         [Column("borrower_id")]
         public int BorrowerId { get; set; }
