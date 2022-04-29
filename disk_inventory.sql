@@ -22,6 +22,9 @@
 --	added stored procedures to insert, update, and delete in item table
 --	edited error message in borrowed_item stored procedures
 --	grant exec permissions for sps in item and borrower tables
+--04/29/2022 by Rebecca Plowman
+--	added InventoryAppUser for trusted connection to app
+--	InventoryAppUser has permission to run create and update procs in diskinventory_rp.borrowed_item
 
 use master;
 Go
@@ -633,3 +636,23 @@ group by borrower.borrower_name
 having count(distinct item_id) > 1
 order by LastName, FirstName;
 go
+
+--create login for app connection
+use master;
+go
+
+if suser_id ('ServerB09\InventoryAppUser') is null
+	CREATE LOGIN [ServerB09\InventoryAppUser] FROM WINDOWS WITH DEFAULT_DATABASE=[diskinventory_rp], DEFAULT_LANGUAGE=[us_english];
+Go
+
+use diskinventory_rp;
+Go
+
+--create database user for diskUserRP
+if user_id ('ServerB09\InventoryAppUser') is null
+CREATE USER [ServerB09\InventoryAppUser] FOR LOGIN [ServerB09\InventoryAppUser] WITH DEFAULT_SCHEMA=[dbo];
+Go
+
+--grant exec permissions for borrowed_item procs
+grant exec on sp_updateBorrowedItem to [ServerB09\InventoryAppUser];
+grant exec on sp_updateBorrowedItem to [ServerB09\InventoryAppUser];
