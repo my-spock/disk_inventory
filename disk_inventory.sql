@@ -24,7 +24,7 @@
 --	grant exec permissions for sps in item and borrower tables
 --04/29/2022 by Rebecca Plowman
 --	added InventoryAppUser for trusted connection to app
---	InventoryAppUser has permission to run create and update procs in diskinventory_rp.borrowed_item
+--	InventoryAppUser has permission to read data and use db procs
 
 use master;
 Go
@@ -648,11 +648,22 @@ Go
 use diskinventory_rp;
 Go
 
---create database user for diskUserRP
+--create database user for InventoryAppUser
 if user_id ('ServerB09\InventoryAppUser') is null
 CREATE USER [ServerB09\InventoryAppUser] FOR LOGIN [ServerB09\InventoryAppUser] WITH DEFAULT_SCHEMA=[dbo];
 Go
 
---grant exec permissions for borrowed_item procs
-grant exec on sp_updateBorrowedItem to [ServerB09\InventoryAppUser];
-grant exec on sp_updateBorrowedItem to [ServerB09\InventoryAppUser];
+--grant read perms to InventoryAppUser
+alter role db_datareader
+	add member InventoryAppUser;
+Go
+--grant exec permissions to InventoryAppUser
+grant exec on sp_insertBorrowedItem to InventoryAppUser;
+grant exec on sp_insertBorrower to InventoryAppUser;
+grant exec on sp_insertItem to InventoryAppUser;
+grant exec on sp_updateBorrowedItem to InventoryAppUser;
+grant exec on sp_updateBorrower to InventoryAppUser;
+grant exec on sp_updateItem to InventoryAppUser;
+grant exec on sp_deleteBorrower to InventoryAppUser;
+grant exec on sp_deleteItem to InventoryAppUser;
+go
