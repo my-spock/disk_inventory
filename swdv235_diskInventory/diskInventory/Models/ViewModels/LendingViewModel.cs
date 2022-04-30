@@ -5,22 +5,22 @@ using System.Threading.Tasks;
 
 namespace diskInventory.Models
 {
-    public class CheckoutViewModel
+    public class LendingViewModel
     {
         private InventoryContext context;
-        public CheckoutViewModel(InventoryContext ctx)
+        public LendingViewModel(InventoryContext ctx)
         {
             context = ctx;
         }
 
         public string action { get; set; }
-        public BorrowedItem borrowedItem { get; set; }
+        public BorrowedItem BorrowedItem { get; set; }
 
         public IEnumerable<Borrower> Borrowers
         {
             get
             {
-                return context.Borrowers.ToList();
+                return context.Borrowers.OrderBy(b => b.FullName).ToList();
             }
         }
 

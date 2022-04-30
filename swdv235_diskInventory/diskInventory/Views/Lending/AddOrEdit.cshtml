@@ -1,0 +1,61 @@
+﻿@model LendingViewModel
+
+@{
+    ViewData["Title"] = $" | {Model.action} History";
+}
+
+<h1 class="display-4">@Model.action Lending History</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="@Model.action" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label asp-for="BorrowedItem.BorrowedDate" class="control-label">Borrowed: </label>
+                <input type="text" asp-for="BorrowedItem.BorrowedDate" class="form-control" />
+                <span asp-validation-for="BorrowedItem.BorrowedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BorrowedItem.ReturnedDate" class="control-label">Returned: </label>
+                <input type="text" asp-for="BorrowedItem.ReturnedDate" class="form-control" />
+                <span asp-validation-for="BorrowedItem.ReturnedDate" class="text-danger"></span>
+            </div>
+            @if(Operation.IsAdd(Model.action))
+            {
+            <div class="form-group row">
+                <label asp-for="BorrowedItem.BorrowerId" class="control-label">Borrower: </label>
+                <select asp-for="BorrowedItem.BorrowerId" class="form-control"
+                        asp-items='@new SelectList(Model.Borrowers,"Id","FullName", Model.BorrowedItem.BorrowerId)'>
+                    <option value="">Select Borrower</option>
+                </select>
+                <span asp-validation-for="BorrowedItem.BorrowerId" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BorrowedItem.ItemId" class="control-label">Item: </label>
+                <select asp-for="BorrowedItem.ItemId" class="form-control"
+                        asp-items='@new SelectList(Model.Items, "Id", "Name", Model.BorrowedItem.ItemId)'>
+                    <option value="">Select Item</option>
+                </select>
+                <span asp-validation-for="BorrowedItem.ItemId" class="text-danger"></span>
+            </div>
+            }
+            else
+            {
+            <p class="form-group-row">
+                Borrower: @Model.BorrowedItem.Borrower.FullName
+            </p>
+            <p class="form-group-row">
+                Item: @Model.BorrowedItem.Item.Name
+            </p>
+            }
+            <div class="form-group row">
+                <button type="submit" class="btn btn-primary">@Model.action</button>
+                <a asp-action="Index" class="btn btn-primary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

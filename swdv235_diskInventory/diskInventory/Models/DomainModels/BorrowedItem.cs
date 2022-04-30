@@ -11,10 +11,11 @@ namespace diskInventory.Models
     {
         [Column("borrowed_id")]
         public int Id { get; set; }
-        [Column("borrowed_date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true), Column("borrowed_date")]
+        [Required(ErrorMessage ="Please enter the borrow date."), MinDate(ErrorMessage = "The returned date must be in the past and before 1900/01/01.")]
         public DateTime BorrowedDate { get; set; }
-        [Column("returned_date")]
-        [MinDate(ErrorMessage ="The borrowed date must be in the past and before 1900/01/01.")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true), Column("returned_date")]
+        [MinDate(ErrorMessage ="The returned date must be in the past and before 1900/01/01.")]
         public DateTime? ReturnedDate { get; set; }
         [Column("borrower_id")]
         [Required(ErrorMessage ="Please select a borrower.")]

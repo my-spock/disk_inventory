@@ -1,0 +1,52 @@
+﻿@model IEnumerable<BorrowedItem>
+
+@{
+    ViewData["Title"] = "Lending History";
+}
+
+<h1 class="display-4">Lending History</h1>
+
+<div class="row">
+    <a asp-action="Add">Checkout An Item</a>
+</div>
+<ul class="list-group">
+    <li class="list-group-item list-group-item-primary">
+        <div class="row">
+            <h4 class="col">
+                Borrowed
+            </h4>
+            <h4 class="col">
+                Returned
+            </h4>
+            <h4 class="col">
+                @Html.DisplayNameFor(model => model.Borrower)
+            </h4>
+            <h4 class="col">
+                @Html.DisplayNameFor(model => model.Item)
+            </h4>
+            <h4 class="col"></h4>
+        </div>
+    </li>
+    @foreach (BorrowedItem bi in Model)
+    {
+    <li class="list-group-item">
+        <div class="row">
+            <p class="col">
+                @Html.DisplayFor(modelItem => bi.BorrowedDate)
+            </p>
+            <p class="col">
+                @Html.DisplayFor(modelItem => bi.ReturnedDate)
+            </p>
+            <p class="col">
+                @Html.DisplayFor(modelItem => bi.Borrower.FullName)
+            </p>
+            <p class="col">
+                @Html.DisplayFor(modelItem => bi.Item.Name)
+            </p>
+            <span class="col">
+                <a asp-action="Edit" asp-route-id="@bi.Id">Edit</a>
+            </span>
+        </div>
+    </li>
+    }
+</ul>

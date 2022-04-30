@@ -17,11 +17,15 @@ namespace diskInventory.Models
                 {
                     return ValidationResult.Success;
                 }
+                else
+                {
+                    string msg = base.ErrorMessage ??
+                        $"{vctx.DisplayName} must be a valid past date before 1900/01/01";
+                    return new ValidationResult(msg);
+                }
             }
 
-            string msg = base.ErrorMessage ??
-                $"{vctx.DisplayName} must be a valid past date before 1900/01/01";
-            return new ValidationResult(msg);
+            return ValidationResult.Success;
         }
     }
 }
