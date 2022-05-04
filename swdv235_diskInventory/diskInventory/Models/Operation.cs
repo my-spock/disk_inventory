@@ -12,7 +12,5 @@ namespace diskInventory.Models
 
         private static bool EqualsNoCase(string s, string tocompare) =>
             s?.ToLower() == tocompare?.ToLower();
-
-        public static string IsNullVal(object s) => s == null ? null : s.ToString();
     }
 }

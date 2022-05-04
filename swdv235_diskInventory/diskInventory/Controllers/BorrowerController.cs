@@ -1,5 +1,6 @@
 ﻿using diskInventory.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,9 @@ namespace diskInventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Borrowers.Add(borrower);
+                //context.Borrowers.Add(borrower);
+                context.Database.ExecuteSqlRaw("exec sp_insertBorrower @p0, @p1",
+                    parameters: new[] { borrower.FullName.ToString(), borrower.Phone.ToString()});
                 context.SaveChanges();
 
                 TempData["message"] = $"{borrower.FullName} updated.";
@@ -57,7 +60,9 @@ namespace diskInventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Borrowers.Update(borrower);
+                //context.Borrowers.Update(borrower);
+                context.Database.ExecuteSqlRaw("exec sp_updateBorrower @p0, @p1, @p2",
+                    parameters: new[] { borrower.Id.ToString(), borrower.FullName.ToString(), borrower.Phone.ToString()});
                 context.SaveChanges();
 
                 TempData["message"] = $"{borrower.FullName} updated.";
