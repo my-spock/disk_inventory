@@ -10,6 +10,7 @@
     <div class="col-md-4">
         <form asp-action="@Model.action" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BorrowedItem.Id" />
             <div class="form-group row">
                 <label asp-for="BorrowedItem.BorrowedDate" class="control-label">Borrowed: </label>
                 <input type="text" asp-for="BorrowedItem.BorrowedDate" class="form-control" />

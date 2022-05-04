@@ -34,8 +34,10 @@ namespace diskInventory.Controllers
         {
             if (ModelState.IsValid)
             {
+                //_context.BorrowedItems.Add(borrowedItem);
+                _context.Database.ExecuteSqlRaw("exec sp_insertBorrowedItem @p0, @p1, @p2, @p3",
+                   parameters: new[] { borrowedItem.BorrowerId.ToString(), borrowedItem.ItemId.ToString(), borrowedItem.BorrowedDate.ToString(), borrowedItem.ReturnedDate?.ToString() });
                 StatusType status = _context.StatusTypes.Single(s => s.Name == "On Loan");
-                _context.BorrowedItems.Add(borrowedItem);
                 _context.Database.ExecuteSqlRaw($"UPDATE [item] SET [status_id] = {status.Id} WHERE [item_id] = {borrowedItem.ItemId}");
                 _context.SaveChanges();
 
@@ -63,7 +65,9 @@ namespace diskInventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Update(borrowedItem);
+                //_context.Update(borrowedItem);
+                _context.Database.ExecuteSqlRaw("exec sp_updateBorrowedItem @p0, @p1, @p2, @p3, @p4",
+                    parameters: new[] { borrowedItem.Id.ToString(), borrowedItem.BorrowerId.ToString(), borrowedItem.ItemId.ToString(), borrowedItem.BorrowedDate.ToString(), borrowedItem.ReturnedDate?.ToString()});
                 //TODO: decide how to handle item.status update
                 _context.SaveChanges();
 

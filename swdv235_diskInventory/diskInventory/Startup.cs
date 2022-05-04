@@ -33,8 +33,8 @@ namespace diskInventory
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
-            //services.AddDbContext<InventoryContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("InventoryContext")));
+            services.AddDbContext<InventoryContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("InventoryContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
