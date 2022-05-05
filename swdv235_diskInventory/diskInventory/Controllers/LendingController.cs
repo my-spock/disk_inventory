@@ -32,6 +32,9 @@ namespace diskInventory.Controllers
         [HttpPost]
         public IActionResult Add(BorrowedItem borrowedItem)
         {
+            //check that borrow date is before return date
+            DateIsBefore(borrowedItem.BorrowedDate, borrowedItem.ReturnedDate);
+
             if (ModelState.IsValid)
             {
                 _context.Database.ExecuteSqlRaw("exec sp_insertBorrowedItem @p0, @p1, @p2, @p3",
@@ -62,6 +65,9 @@ namespace diskInventory.Controllers
         [HttpPost]
         public IActionResult Edit(BorrowedItem borrowedItem)
         {
+            //check that borrow date is before return date
+            DateIsBefore(borrowedItem.BorrowedDate, borrowedItem.ReturnedDate);
+
             if (ModelState.IsValid)
             {
                 _context.Database.ExecuteSqlRaw("exec sp_updateBorrowedItem @p0, @p1, @p2, @p3, @p4",
@@ -74,9 +80,14 @@ namespace diskInventory.Controllers
             }
             else
             {
-                LendingViewModel vm = new LendingViewModel(_context);
-                vm.BorrowedItem = borrowedItem;
-                vm.action = "Edit";
+                borrowedItem.Borrower = _context.Borrowers.Single(b => b.Id == borrowedItem.BorrowerId);
+                borrowedItem.Item = _context.Items.Single(i => i.Id == borrowedItem.ItemId);
+
+                LendingViewModel vm = new LendingViewModel(_context)
+                {
+                    BorrowedItem = borrowedItem,
+                    action = "Edit"
+                };
 
                 ModelState.AddModelError("", "There are errors in the form.");
                 return View("AddOrEdit", vm);
@@ -104,6 +115,17 @@ namespace diskInventory.Controllers
             else
             {
                 vm.BorrowedItem = _context.BorrowedItems.Include(bi => bi.Borrower).Include(bi => bi.Item).Single(bi => bi.Id == id);
+            }
+        }
+        private void DateIsBefore(DateTime borrowDate, DateTime? returnDate)
+        {
+            if (returnDate == null)
+            {
+                return;
+            }
+            else if (borrowDate > returnDate)
+            {
+                ModelState.AddModelError("", "The borrowed date must be before the returned date.");
             }
         }
     }

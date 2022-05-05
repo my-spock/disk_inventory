@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = $" | {Model.action} History";
+    var borrowers = Model.Borrowers;
+    var items = Model.Items;
 }
 
 <h1 class="display-4">@Model.action Lending History</h1>
