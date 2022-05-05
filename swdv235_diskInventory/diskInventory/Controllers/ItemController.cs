@@ -30,10 +30,11 @@ namespace diskInventory.Controllers
         [HttpPost]
         public IActionResult Add(Item item)
         {
-            //TODO: validate empty item.ReleaseDate field
             if (ModelState.IsValid)
             {
-                context.Items.Add(item);
+                //context.Items.Add(item);
+                context.Database.ExecuteSqlRaw("exec sp_insertItem @p0, @p1, @p2, @p3, @p4",
+                    parameters: new[] {item.Name.ToString(), item.ReleaseDate.ToString(), item.StatusId.ToString(), item.TypeId.ToString(), item.GenreId.ToString() });
                 context.SaveChanges();
 
                 TempData["message"] = $"{item.Name} updated.";
@@ -55,10 +56,11 @@ namespace diskInventory.Controllers
         [HttpPost]
         public IActionResult Edit(Item item)
         {
-            //TODO: validate empty item.ReleaseDate field
             if (ModelState.IsValid)
             {
-                context.Items.Update(item);
+                //context.Items.Update(item);
+                context.Database.ExecuteSqlRaw("exec sp_updateItem @p0, @p1, @p2, @p3, @p4, @p5",
+                    parameters: new[] { item.Id.ToString(), item.Name.ToString(), item.ReleaseDate.ToString(), item.StatusId.ToString(), item.TypeId.ToString(), item.GenreId.ToString() });
                 context.SaveChanges();
 
                 TempData["message"] = $"{item.Name} updated.";
