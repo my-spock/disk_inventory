@@ -82,7 +82,6 @@ namespace diskInventory.Controllers
         public IActionResult Delete(Item item)
         {
             // delete Item and references in BorrowedItems 
-            //context.Items.Remove(item);
             context.Database.ExecuteSqlRaw("exec sp_deleteItem @p0",
                 parameters: new[] {item.Id.ToString() });
             context.SaveChanges();
