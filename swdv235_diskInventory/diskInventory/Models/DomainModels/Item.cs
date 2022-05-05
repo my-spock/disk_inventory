@@ -16,7 +16,7 @@ namespace diskInventory.Models
         [Required(ErrorMessage ="A name is required."), StringLength(100, ErrorMessage ="A name must not be longer than 100 characters.")]
         public string Name { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true), Column("release_date")]
-        [Required(ErrorMessage ="A release date is required."), MinDate(ErrorMessage ="The release date must be in the past and before 1900/01/01.")]
+        [Required(ErrorMessage ="A release date is required."), MinDate(ErrorMessage ="The release date must be in the past and after 1900/01/01.")]
         public DateTime ReleaseDate { get; set; }
         [Column("status_id")]
         [Required(ErrorMessage ="A status is required.")]
