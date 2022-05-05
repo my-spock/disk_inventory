@@ -34,7 +34,6 @@ namespace diskInventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                //context.Borrowers.Add(borrower);
                 context.Database.ExecuteSqlRaw("exec sp_insertBorrower @p0, @p1",
                     parameters: new[] { borrower.FullName.ToString(), borrower.Phone.ToString()});
                 context.SaveChanges();
@@ -60,7 +59,6 @@ namespace diskInventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                //context.Borrowers.Update(borrower);
                 context.Database.ExecuteSqlRaw("exec sp_updateBorrower @p0, @p1, @p2",
                     parameters: new[] { borrower.Id.ToString(), borrower.FullName.ToString(), borrower.Phone.ToString()});
                 context.SaveChanges();
@@ -85,13 +83,12 @@ namespace diskInventory.Controllers
         [HttpPost]
         public IActionResult Delete(Borrower borrower)
         {
-            // remove any references to Borrower in BorrowedItems 
-            DeleteBorrowedItems(borrower.Id);
-            // delete Item
-            context.Borrowers.Remove(borrower);
+            // delete Borrower and any references to Borrower in BorrowedItems
+            context.Database.ExecuteSqlRaw("exec sp_deleteBorrower @p0",
+                parameters: new[] { borrower.Id.ToString()});
             context.SaveChanges();
             TempData["message"] = $"{borrower.FullName} removed from borrowers.";
-            return RedirectToAction("Index");  // PRG pattern
+            return RedirectToAction("Index"); 
         }
 
         // private helper methods
@@ -112,16 +109,6 @@ namespace diskInventory.Controllers
             else
             {
                 vm.Borrower = context.Borrowers.Find(id);
-            }
-        }
-        private void DeleteBorrowedItems(int borrowerId)
-        {
-            //get list of borrowed item references
-            var borrowedInstances = context.BorrowedItems.Where(bi => bi.BorrowerId == borrowerId).ToList();
-
-            foreach (BorrowedItem bi in borrowedInstances)
-            {
-                context.BorrowedItems.Remove(bi);
             }
         }
     }
